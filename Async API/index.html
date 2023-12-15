@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #btn{
+            align-items: center;
+            width:8rem;
+            height:3rem;
+            border:none;
+            border-radius:.75rem;
+            background-color: lightskyblue;
+            font-size: 1.25rem;
+            margin:1rem;
+            padding:.5rem;
+        }
+        #art{
+            border:2px solid black;
+            border-radius:.75rem;
+        }
+        #image{
+            width:50rem;
+            height:30rem;
+            margin:1rem;
+            border-radius:.5rem;
+        }
+        #temp1{
+           display:flex;
+        }
+        #news-header,#author,#pb_date,#src{
+            margin:3rem;
+            padding:1rem;
+        }
+        #src{
+          color:rgb(22, 127, 192);  
+        }
+        #cnt,#disc{
+           font-size:2rem;
+           margin:1rem;
+        }
+        #link{
+            font-size:1.6rem;
+            
+            margin:1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div style="display:flex;"><button id="btn">Get News</button></div>
+    <div id="art">
+        <div id="temp1">
+            <img src=""  id="image" alt="News Photo"/>
+            <div id="temp2">
+                 <h1 id="src">Sand.</h1>
+                 <h1 id="news-header">Temp artiple</h1>
+                 <h2 id="author">Lio</h2>
+                 <h2 id="pb_date">29-2-2000</h2>
+            </div>           
+        </div>
+       <div id="temp3">
+            <h2>description</h2>
+            <p id="disc">good</p>
+            <h2>Main Talk</h2>
+            <p id="cnt">okah</p> 
+            <h2>Read full article <a id="link">here.</a> </h2>
+                      
+       </div>
+        
+    </div>
+</body>
+<script src="index.js"></script>
+</html>

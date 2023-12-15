@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OX</title>
+    <style>
+        #row1,#row2,#row3
+        {
+            width:18rem;
+            height:8rem;
+            display: flex;
+            background-color: black;
+        }
+        #col11,#col12,#col13,#col21,#col22,#col23,#col31,#col32,#col33
+        {
+            background-color: cornflowerblue;
+            margin:1rem;
+            width:5rem;
+            height:5rem;
+            text-align: center;
+            font-size: 2rem;
+        }
+        #box{
+            margin-left:30%;
+            margin-top:10%;
+            
+        }
+        body{
+            background-color: cadetblue;
+        }
+        #init{
+            display: flex;
+        }
+        #show-opt,#head{
+            margin:1rem;
+            font-size: 2rem;
+        }
+        .intial-symb{
+            width:4rem;
+            height:4rem;
+            background-color:black;
+            border: none;
+            border-radius:5px;
+            margin:1rem;
+            color:cornflowerblue;
+            font-size:2rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="init">
+           <h2>Choose starting Move: </h2>
+           <button id="ch-O"class="intial-symb">O</button>
+           <button id="ch-X" class="intial-symb">X</button>
+        </div>
+        <div id="show-opt">You have choosen <b>_</b> first</div>
+        <div id="head"></div>
+         <div id="row1">
+            <div id="col11"></div>
+            <div id="col12"></div>
+            <div id="col13"></div>
+         </div>
+         <div id="row2">
+            <div id="col21"></div>
+            <div id="col22"></div>
+            <div id="col23"></div>
+         </div>
+         <div id="row3">
+            <div id="col31"></div>
+            <div id="col32"></div>
+            <div id="col33"></div>
+         </div>
+    </div>
+</body>
+<script src="index.js"></script>
+</html>

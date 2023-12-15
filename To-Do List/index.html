@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskBook</title>
+    <style>
+        *{
+            font-weight: 400;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body{background-color: rgb(10,2,20);}
+        .main h1{
+            text-align: center;
+            color:cornflowerblue;
+        }
+
+        #inp-box{
+            display: flex;
+        }
+
+        #task-list{
+            color: white;
+             background-color: rgb(10,2,50);
+            margin-top: 1rem;
+            height:40rem;
+            overflow-y: scroll;
+        }
+
+        #text-in{
+            border-radius: .7rem;
+            font-size:1.2rem;
+            border: 5px solid coral;
+        }
+
+
+        .task-addedAt{
+            color:white;
+            font-size:1rem;
+            font-weight: 700;
+            padding:.7rem;
+            
+        }
+        
+        .task-content{
+           background-color: cornflowerblue;
+           width:60rem;
+           border-radius:1rem;
+        }
+
+        .task-name{
+            
+            background-color: coral;
+            color:rgb(10,2,20);
+            border-radius:10px ;
+            margin:1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding:1rem;
+        }
+
+        .tasks{
+            width:50rem;
+            display:flex;
+            background-color:cornflowerblue;
+            border-radius:1rem;
+            margin:.5rem;
+        }
+
+        .tick
+        {
+            width:2rem;   
+            height:2rem;                     
+            clip-path: circle(50% at 50% 50%); 
+            margin-top:2rem;
+        }
+
+        #add-btn , #clr-list{
+            width:8rem;
+            height:3rem;
+            background-color: cornflowerblue;
+            outline: none;
+            border: none;
+            border-radius: .5rem;
+            margin:2rem;
+            font-size: 1.2rem;
+        }
+        h2{
+            color:cornflowerblue;
+            margin:2rem;
+        }
+        .del-btn , .edit-btn{
+            width:10rem;
+            height:3rem;
+            background-color:rgb(10,2,20);
+            outline: none;
+            border: none;
+            border-radius: .5rem;
+            margin:1.5rem;
+            font-size: 1.2rem;
+            color:white;
+        }
+
+        #sort-opt{
+            width:10rem;
+            height:2rem;
+            border:none;
+            border-radius:10px;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: cornflowerblue;
+            color:rgb(10,2,20);
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>TaskBook</h1>
+        <div class="task-body">
+            <div id="inp-box">
+                <h2>Write Your Task here :</h2>
+                <textarea id="text-in" cols="40" rows="5" value=""></textarea>
+                <button id="add-btn">Add Task</button> 
+                <button id="clr-list">Clear All Task</button>
+            </div>
+            <div id="sort-cnt">
+                <select id="sort-opt">
+                    <option value="all">Sort Tasks-All</option>
+                    <option value="true">Completed Tasks</option>
+                    <option value="false">Incompleted Tasks</option>
+                </select>
+            </div>
+            <div id="task-list">
+               
+            </div>
+        </div>
+    </div>
+</body>
+<script src="index.js"></script>
+</html>
