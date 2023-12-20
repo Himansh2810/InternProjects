@@ -12,7 +12,7 @@ function PromiseCallAPI() {
   const art_promise = new Promise((resolve, reject) => {
     let data = fetch(
       "https://newsapi.org/v2/everything?q=bitcoin&apiKey=a65f25b156db45fe98b5db96e85ce606"
-    )
+    )	
       .then((res) => res.json())
       .then((dt) => resolve(dt))
       .catch((e) => {
