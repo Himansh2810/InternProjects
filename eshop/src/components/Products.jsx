@@ -25,6 +25,56 @@ function Products() {
     setCategory(e.target.value);
   };
 
+  const searchProducts = (e) => {
+    let filter = e.target.value.toLowerCase();
+    let fs = filter.split(" ");
+
+    if (fs.length > 1) {
+      for (let j = 0; j < fs.length; j++) {
+        searchProducts({
+          target: {
+            value: fs[j],
+          },
+        });
+      }
+    } else {
+      let divs = document.getElementsByClassName("cst");
+
+      for (let i = 0; i < divs.length; i++) {
+        let text_cnt = divs[i].textContent || divs[i].innerText;
+
+        if (text_cnt.toLowerCase().indexOf(filter) > -1) {
+          divs[i].style.display = "";
+        } else {
+          divs[i].style.display = "none";
+        }
+      }
+
+      // let dd = document.createElement("p");
+      // let parentEl = document.querySelector(".home-cnt");
+
+      // if (parentEl.innerText === "") {
+      //   dd.className = "text-mid text-center text-danger fw-medium";
+      //   dd.innerText = "No Result found";
+      //   parentEl.append(dd);
+      // } else {
+      //   dd.innerText = "";
+      // }
+    }
+  };
+
+  const delaySearch = (callback, ms) => {
+    let timer = 0;
+    return function () {
+      var context = this,
+        args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        callback.apply(context, args);
+      }, ms || 0);
+    };
+  };
+
   return (
     <AdditionCSS>
       <Container className="header d-flex justify-content-around align-items-center">
@@ -44,10 +94,11 @@ function Products() {
         </select>
         <div className="">
           <input
-            className="search-box"
+            className="search-box text-mid-small"
             type="text"
             placeholder="Search Products"
             aria-label="Search"
+            onKeyUp={delaySearch(searchProducts, 500)}
           />
           <FaSearch className="text-mid" />
         </div>
@@ -135,6 +186,10 @@ const AdditionCSS = styled.div`
     border: none;
     outline: none;
     border-bottom: 2px solid #2e6cde;
+    transition: 0.15s ease-in-out;
+    &:hover {
+      font-size: 1.6rem;
+    }
   }
 
   .cst {

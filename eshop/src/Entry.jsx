@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import styled from "styled-components";
-import { Navbar, Nav, Container, Button, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import { Outlet, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 import { PiShoppingCartDuotone } from "react-icons/pi";
@@ -66,10 +66,6 @@ function Entry() {
               </Nav.Link>
               <Nav.Link className="mx-2" href="/products">
                 Products
-              </Nav.Link>
-              <Nav.Link className="mx-2" href="/about">
-                {" "}
-                About{" "}
               </Nav.Link>
               <NavDropdown
                 className="rounded-5 bg-primary"
