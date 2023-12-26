@@ -5,11 +5,13 @@ import { UserContext } from "../UserContext";
 import eShopentry from "../assets/eShopentry.jpg";
 import { IoStarOutline } from "react-icons/io5";
 import { BsCurrencyDollar } from "react-icons/bs";
+import { useSelector } from "react-redux";
 ///https://s3.amazonaws.com/mobileappdaily/mad/uploads/img_best_shopping_apps.jpg
 
 function Home() {
   const [user] = useContext(UserContext);
   const [trendProducts, setTrendProd] = useState([]);
+  const themeColor = useSelector((state) => state.thColor);
 
   useEffect(() => {
     FetchProducts();
@@ -45,7 +47,12 @@ function Home() {
 
   return (
     <AdditionCSS>
-      <Container className="home-cnt d-flex justify-content-around rounded-3">
+      <Container
+        className={
+          "home-cnt d-flex justify-content-around rounded-3 text-" +
+          (themeColor === "light" ? "dark" : "light")
+        }
+      >
         <div className="my-auto">
           <h1 className="d-flex  ">
             Welcome to <span className="text-primary">&nbsp;e</span>Shop ,
@@ -59,13 +66,23 @@ function Home() {
             experience in product buying and at great price also.
           </p>
         </div>
-        <Card className="w-50 h-auto my-auto rounded-3 bdr">
+        <Card
+          className={
+            "w-50 h-auto my-auto rounded-3 bdr bg-" +
+            (themeColor === "light" ? "white" : "dark")
+          }
+        >
           <Card.Img className="rounded-3" src={eShopentry}></Card.Img>
           <Card.Body>
             <Card.Title className="text-mid-large fw-medium text-esec">
               Shop now and get amazing discount.
             </Card.Title>
-            <Card.Text className="text-mid-small fw-medium">
+            <Card.Text
+              className={
+                "text-mid-small fw-medium text-" +
+                (themeColor === "light" ? "black" : "white")
+              }
+            >
               Check out our new deals & trending items below.
               <span className="text-esec">&nbsp;Happy eShopping</span>.
             </Card.Text>
@@ -79,8 +96,19 @@ function Home() {
         <div className="row mt-5">
           {trendProducts.map((product) => {
             return (
-              <Card key={product.id} className="m-5 h-auto col-3 cst">
-                <Card.Text className="fw-medium m-2 ">
+              <Card
+                key={product.id}
+                className={
+                  "m-5 h-auto col-3 cst bg-" +
+                  (themeColor === "light" ? "white" : "dark")
+                }
+              >
+                <Card.Text
+                  className={
+                    "fw-medium m-2 text-" +
+                    (themeColor === "light" ? "dark" : "secondary")
+                  }
+                >
                   {product.category}
                 </Card.Text>
                 <Card.Img className="m-3 w-75 " src={product.image}></Card.Img>
@@ -92,15 +120,28 @@ function Home() {
                         {product.rating.rate}&nbsp;
                         <IoStarOutline className="mb-2 text-mid-small" />
                       </span>
-                      <p className="text-small text-dark mt-2">
+                      <p
+                        className={
+                          "text-small mt-2 text-" +
+                          (themeColor === "light" ? "dark" : "secondary")
+                        }
+                      >
                         {product.rating.count} ratings
                       </p>
                     </h3>
                   </Card.Title>
                   <Card.Text className="text-mid fw-medium mt-3 ms-3">
                     <h2 className="d-flex align-items-center justify-content-start">
-                      <span>{product.price}</span>
-                      <BsCurrencyDollar />
+                      <span
+                        className={
+                          "d-flex align-items-center text-" +
+                          (themeColor === "light" ? "dark" : "light")
+                        }
+                      >
+                        {product.price}
+                        <BsCurrencyDollar />
+                      </span>
+
                       <span className="text-mid-small text-danger  prev-p d-flex align-items-center ms-2 ">
                         {PrevPrice(product.price)}
                         <BsCurrencyDollar />
@@ -109,7 +150,12 @@ function Home() {
                         25% off.
                       </span>
                     </h2>
-                    <h5 className="mt-3 d-block text-truncate ">
+                    <h5
+                      className={
+                        "mt-3 d-block text-truncate text-" +
+                        (themeColor === "light" ? "dark" : "secondary")
+                      }
+                    >
                       {product.description}
                     </h5>
                   </Card.Text>

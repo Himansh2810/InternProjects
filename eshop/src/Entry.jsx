@@ -15,10 +15,16 @@ import {
   FaGithub,
   FaEnvelope,
 } from "react-icons/fa6";
+import { MdOutlineLightMode, MdLightMode } from "react-icons/md";
+import { useSelector, useDispatch } from "react-redux";
+import { changeTheme } from "./eStore-redux/themeSlice";
 
 function Entry() {
   const navigate = useNavigate();
   const [user, setUser] = useContext(UserContext);
+
+  const themeColor = useSelector((state) => state.thColor);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (sessionStorage.length === 0) {
@@ -52,8 +58,8 @@ function Entry() {
   window.addEventListener("scroll", addBrdrToNav);
 
   return (
-    <AdditionCSS>
-      <Navbar expand="lg" className="nav-clr fixed-top ">
+    <AdditionCSS themeColor={themeColor}>
+      <Navbar expand="lg" variant={themeColor} className="nav-clr fixed-top ">
         <Container fluid>
           <Navbar.Brand href="/" className="ms-3 fw-bold text-mid-large">
             <span className="text-primary">e</span>Shop
@@ -61,6 +67,21 @@ function Entry() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto me-5 text-mid fw-medium">
+              <Nav.Link
+                className="mx-2 thBtn"
+                title={themeColor + " Mode"}
+                onClick={() =>
+                  dispatch(
+                    changeTheme(themeColor === "light" ? "dark" : "light")
+                  )
+                }
+              >
+                {themeColor === "light" ? (
+                  <MdOutlineLightMode />
+                ) : (
+                  <MdLightMode />
+                )}
+              </Nav.Link>
               <Nav.Link className="mx-2" href="/">
                 Home
               </Nav.Link>
@@ -100,10 +121,15 @@ function Entry() {
         </Container>
       </Navbar>
       <Outlet />
-      <footer className="mt-5 page-footer font-small blue pt-4">
+      <footer
+        className={
+          `mt-5 page-footer font-small blue pt-4 text-` +
+          (themeColor === "light" ? "dark" : "secondary")
+        }
+      >
         <Container className="cnt text-center text-md-left">
           <section className="mt-2 d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
-            <div className="me-5 d-none d-lg-block fw-medium">
+            <div className="me-5 d-none d-lg-block fw-medium ">
               <span>Get connected with us on social networks:</span>
             </div>
 
@@ -180,7 +206,15 @@ function Entry() {
             </Container>
           </section>
         </Container>
-        <div className="last-foot text-center p-4 fw-medium ">
+        <div
+          className="text-center p-4 fw-medium "
+          style={{
+            backgroundColor:
+              themeColor === "light"
+                ? "rgba(0,0,0,0.1)"
+                : "rgba(255,255,255,0.1)",
+          }}
+        >
           © 2023 Copyright :
           <a className=" ms-3 text-mid-small text-primary fw-bold" href="/">
             eshop.com
@@ -209,7 +243,8 @@ const AdditionCSS = styled.div`
   }
 
   .nav-clr {
-    background-color: white;
+    background-color: ${(props) =>
+      props.themeColor === "light" ? `white` : "#212529"};
     transition: 0.1s ease-in-out;
   }
 
@@ -232,8 +267,14 @@ const AdditionCSS = styled.div`
     border-radius: 0.6rem;
   }
 
-  .last-foot {
-    background-color: rgba(0, 0, 0, 0.05);
+  /* .last-foot {
+    background-color: rgba(255, 255, 255, 0.05);
+  } */
+
+  .thBtn {
+    &:hover {
+      color: black;
+    }
   }
 `;
 

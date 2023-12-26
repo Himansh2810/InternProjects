@@ -14,12 +14,16 @@ import About from "./components/About";
 import CreateUser from "./CreateUser";
 import { useState } from "react";
 import Products from "./components/Products";
+import { createGlobalStyle } from "styled-components";
+import { useSelector } from "react-redux";
 
 function App() {
   const [user, setUser] = useState({
     username: "",
     name: "",
   });
+
+  const themeColor = useSelector((state) => state.thColor);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -38,11 +42,19 @@ function App() {
 
   return (
     <UserContext.Provider value={[user, setUser]}>
+      <GlobalStyle themeColor={themeColor} />
       <RouterProvider router={router}>
         <Entry />
       </RouterProvider>
     </UserContext.Provider>
   );
 }
+
+const GlobalStyle = createGlobalStyle`
+ body{
+   background-color:${(props) =>
+     props.themeColor === "light" ? "white" : "#212529"};
+ }
+`;
 
 export default App;
