@@ -1,6 +1,7 @@
 const initialValue = {
-  username: "",
   name: "",
+  password: "",
+  username: "",
 };
 
 function userReducer(state = { user: initialValue }, action) {

@@ -29,39 +29,16 @@ function Products() {
 
   const searchProducts = (e) => {
     let filter = e.target.value.toLowerCase();
-    let fs = filter.split(" ");
+    let divs = document.getElementsByClassName("cst");
 
-    if (fs.length > 1) {
-      for (let j = 0; j < fs.length; j++) {
-        searchProducts({
-          target: {
-            value: fs[j],
-          },
-        });
+    for (let i = 0; i < divs.length; i++) {
+      let text_cnt = divs[i].textContent || divs[i].innerText;
+
+      if (text_cnt.toLowerCase().indexOf(filter) > -1) {
+        divs[i].style.display = "";
+      } else {
+        divs[i].style.display = "none";
       }
-    } else {
-      let divs = document.getElementsByClassName("cst");
-
-      for (let i = 0; i < divs.length; i++) {
-        let text_cnt = divs[i].textContent || divs[i].innerText;
-
-        if (text_cnt.toLowerCase().indexOf(filter) > -1) {
-          divs[i].style.display = "";
-        } else {
-          divs[i].style.display = "none";
-        }
-      }
-
-      // let dd = document.createElement("p");
-      // let parentEl = document.querySelector(".home-cnt");
-
-      // if (parentEl.innerText === "") {
-      //   dd.className = "text-mid text-center text-danger fw-medium";
-      //   dd.innerText = "No Result found";
-      //   parentEl.append(dd);
-      // } else {
-      //   dd.innerText = "";
-      // }
     }
   };
 

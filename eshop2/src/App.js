@@ -14,6 +14,7 @@ import CreateUser from "./CreateUser";
 import Products from "./components/Products";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
+import Cart from "./components/Cart";
 
 function App() {
   // const [user, setUser] = useState({
@@ -31,6 +32,7 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="about" element={<About />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/create-account" element={<CreateUser />} />
@@ -40,7 +42,7 @@ function App() {
 
   return (
     <>
-      <GlobalStyle themeColor={themeColor} />
+      <GlobalStyle themecolor={themeColor} />
       <RouterProvider router={router}>
         <Entry />
       </RouterProvider>
@@ -51,7 +53,7 @@ function App() {
 const GlobalStyle = createGlobalStyle`
  body{
    background-color:${(props) =>
-     props.themeColor === "light" ? "white" : "#212529"};
+     props.themecolor === "light" ? "white" : "#212529"};
  }
 `;
 

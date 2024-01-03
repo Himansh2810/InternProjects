@@ -1,7 +1,6 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Card } from "react-bootstrap";
 import styled from "styled-components";
-import { UserContext } from "../UserContext";
 import eShopentry from "../assets/eShopentry.jpg";
 import { IoStarOutline } from "react-icons/io5";
 import { BsCurrencyDollar } from "react-icons/bs";
@@ -54,7 +53,7 @@ function Home() {
         }
       >
         <div className="my-auto">
-          <h1 className="d-flex  ">
+          <h1 className="d-inline  ">
             Welcome to <span className="text-primary">&nbsp;e</span>Shop ,
             <span className="text-primary text-capitalize d-inline">
               &nbsp;{user.name}
@@ -131,7 +130,7 @@ function Home() {
                     </h3>
                   </Card.Title>
                   <Card.Text className="text-mid fw-medium mt-3 ms-3">
-                    <h2 className="d-flex align-items-center justify-content-start">
+                    <span className="d-flex align-items-center justify-content-start">
                       <span
                         className={
                           "d-flex align-items-center text-" +
@@ -149,15 +148,15 @@ function Home() {
                       <span className="text-success text-mid-small">
                         25% off.
                       </span>
-                    </h2>
-                    <h5
+                    </span>
+                    <span
                       className={
-                        "mt-3 d-block text-truncate text-" +
+                        " text-small mt-3 d-block text-truncate text-" +
                         (themeColor === "light" ? "dark" : "secondary")
                       }
                     >
                       {product.description}
-                    </h5>
+                    </span>
                   </Card.Text>
                 </Card.Body>
               </Card>
