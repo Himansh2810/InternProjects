@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -9,34 +9,49 @@ import toast, { Toaster } from "react-hot-toast";
 function Login() {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (sessionStorage.getItem("eshop-user-token")) {
+      navigate("/");
+    }
+  }, []);
+
+  async function authenticateUserDetails(usr) {
+    try {
+      const data = await axios.post("http://localhost:8000/api/login/", usr);
+
+      if (data.status === 200) {
+        toast.success("Valid details ");
+        sessionStorage.setItem("eshop-user-token", data.data.access_token);
+        navigate("/");
+      } else {
+        toast.error(
+          "There's a problem in Logging in you. \n Please try again."
+        );
+        // console.error(data.data.error);
+      }
+    } catch (e) {
+      toast.error("Invalid Username or Password.");
+    }
+  }
+
   const { values, handleChange, handleSubmit } = useFormik({
     initialValues: { username: "", password: "" },
     onSubmit: (vals) => {
-      authenticateUserDetails(vals);
-    },
-  });
-
-  async function authenticateUserDetails(usr) {
-    const data = await axios.post(
-      "http://localhost:8085/api/authenticate-user/",
-      usr
-    );
-
-    if (data.data.status === 200) {
-      toast.error("it worked");
-      sessionStorage.setItem("eshop-user", usr.username);
-      navigate("/");
-    } else {
-      toast.error(`Invalid Username or Password.`);
+      if (vals.password === "" || vals.username === "") {
+        toast.error("All the fields are required");
+      } else {
+        authenticateUserDetails(vals);
+      }
     }
-  }
+  });
 
   return (
     <>
       <AdditionCSS>
         <Container className="my-5 p-5 rounded">
           <h1 className="d-flex justify-content-center">
-            <span className="text-primary">e</span>Shop
+            <span className="text-primary">e</span>
+            Shop
           </h1>
           <Form>
             <Form.Group className="m-3">
@@ -49,10 +64,11 @@ function Login() {
               </Form.Label>
               <Form.Control
                 onChange={handleChange}
-                className={"inp text-mid"}
+                className="inp text-mid"
                 name="username"
                 type="text"
                 value={values.username}
+                required
               />
             </Form.Group>
 
@@ -66,13 +82,13 @@ function Login() {
               </Form.Label>
               <Form.Control
                 onChange={handleChange}
-                className={"inp text-mid"}
+                className="inp text-mid"
                 name="password"
                 type="password"
                 value={values.password}
+                required
               />
             </Form.Group>
-            <Form.Text id="warn" className="text-danger"></Form.Text>
             <Form.Group className="flex-column  m-3">
               <Button
                 onClick={handleSubmit}
@@ -82,8 +98,15 @@ function Login() {
                 Login
               </Button>
               <h2 className="text-small fw-medium mt-5">
-                Don't have an account ?{" "}
-                <Link className="text-primary text-small" to="/create-account">
+                Don&apos;t have an account ?{" "}
+                <Link
+                  onMouseOver={(e) =>
+                    (e.target.style.textDecoration = "underline")
+                  }
+                  onMouseOut={(e) => (e.target.style.textDecoration = "none")}
+                  className="text-primary text-small"
+                  to="/create-account"
+                >
                   Create Account
                 </Link>
                 .
@@ -103,8 +126,8 @@ function Login() {
               width: "25rem",
               height: "4rem",
               fontSize: "1.2rem",
-              fontWeight: "bold",
-            },
+              fontWeight: "bold"
+            }
           },
           error: {
             duration: 2500,
@@ -113,9 +136,9 @@ function Login() {
               height: "4rem",
               fontSize: "1.2rem",
               fontWeight: "bold",
-              color: "rgba(255,0,0,0.75)",
-            },
-          },
+              color: "rgba(255,0,0,0.75)"
+            }
+          }
         }}
       />
     </>

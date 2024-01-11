@@ -11,14 +11,11 @@ const initialValues = {
   name: "",
   username: "",
   password: "",
-  confirm_password: "",
+  confirm_password: ""
 };
 
 function CreateUser() {
   const navigate = useNavigate();
-
-  //Validation using simple javscript code commented at line number 150+ >
-  // validation using Formik & Yup
 
   const regSchema = Yup.object({
     name: Yup.string()
@@ -54,42 +51,25 @@ function CreateUser() {
       .oneOf(
         [Yup.ref("password"), null],
         "Confirm password must be same as Password"
-      ),
+      )
   });
 
-  const form_names = ["name", "username", "password", "confirm_password"];
-
-  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: regSchema,
-      onSubmit: (vals) => {
-        const user = {
-          username: vals.username,
-          name: vals.name,
-          password: vals.password,
-        };
-
-        createUserApi(user);
-      },
-    });
+  const formNames = ["name", "username", "password", "confirm_password"];
 
   async function createUserApi(user) {
     try {
       const data = await axios.post(
-        "http://localhost:8085/api/create-user/",
+        "http://localhost:8000/api/create-user/",
         user
       );
 
-      console.log(data.data);
-
-      if (data.data.status === 404) {
+      if (data.data.status === 400) {
         toast.error("Username Already exits ! \n Try different Username.");
       } else if (data.data.status === 500) {
         toast.error(
           "There is a problem in creating your account. \n Please try again."
         );
-      } else {
+      } else if (data.data.status === 200) {
         toast.success(
           "Account Created Successfully. \n Redirecting to Login ...",
           {
@@ -98,19 +78,37 @@ function CreateUser() {
               height: "4rem",
               fontSize: "1rem",
               fontWeight: "500",
-              color: "black",
-            },
+              color: "black"
+            }
           }
         );
-
         setTimeout(() => {
           navigate("/login");
         }, 1500);
+      } else if (data.data.message) {
+        toast.error(data.data.message);
+      } else {
+        toast.error("Unknwon error occured . \n Please try again.");
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     }
   }
+
+  const { values, errors, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues,
+      validationSchema: regSchema,
+      onSubmit: (vals) => {
+        const user = {
+          username: vals.username,
+          name: vals.name,
+          password: vals.password
+        };
+
+        createUserApi(user);
+      }
+    });
 
   return (
     <>
@@ -120,9 +118,9 @@ function CreateUser() {
             <span className="text-primary">e</span>Shop
           </h1>
           <Form onSubmit={handleSubmit}>
-            {form_names.map((fnames, index) => {
+            {formNames.map((fnames) => {
               return (
-                <Form.Group key={index} className="m-3">
+                <Form.Group key={1} className="m-3">
                   <Form.Label
                     htmlFor={fnames}
                     style={{ textTransform: "capitalize" }}
@@ -135,7 +133,7 @@ function CreateUser() {
                   <Form.Control
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={"inp text-mid"}
+                    className="inp text-mid"
                     name={fnames}
                     type={fnames.includes("password") ? "password" : "text"}
                     value={values[fnames]}
@@ -173,7 +171,7 @@ function CreateUser() {
         gutter={8}
         toastOptions={{
           success: {
-            duration: 2000,
+            duration: 2000
           },
           error: {
             duration: 2500,
@@ -182,9 +180,9 @@ function CreateUser() {
               height: "8rem",
               fontSize: "1.2rem",
               fontWeight: "bold",
-              color: "rgba(255,0,0,0.75)",
-            },
-          },
+              color: "rgba(255,0,0,0.75)"
+            }
+          }
         }}
       />
     </>
@@ -218,114 +216,3 @@ const AdditionCSS = styled.div`
 `;
 
 export default CreateUser;
-
-// const [name, setName] = useState("");
-// const [uname, setUname] = useState("");
-// const [pswd, setPswd] = useState("");
-// const [cnfPswd, setCnfPswd] = useState("");
-
-// const validateName = (val) => {
-//   let nameElm = document.getElementById("name");
-//   if (val) {
-//     console.log(nameElm);
-//     if (val.length < 2) {
-//       nameElm.innerText = " Name should be greater than 1 letters ";
-//     } else {
-//       nameElm.innerText = "";
-//       let matches = val.match(/^[A-Za-z ]+$/);
-//       if (matches) nameElm.innerText = "";
-//       else nameElm.innerText = "Name can't contain numbers or characters";
-//     }
-//   }
-// };
-
-// const validateUname = (val) => {
-//   let unameElm = document.getElementById("uname");
-//   if (val) {
-//     console.log(unameElm);
-//     if (val.length < 4) {
-//       unameElm.innerText = " Username should be greater than 3 letters ";
-//     } else {
-//       unameElm.innerText = "";
-//       let matches = val.match(/^[A-Za-z0-9._]+$/);
-//       if (matches) unameElm.innerText = "";
-//       else
-//         unameElm.innerText =
-//           "Username can only contain Capital & small alphabets , numbers and special characters  _(underscore) and . (dot)";
-//     }
-//   }
-// };
-
-// const validatePswd = (val) => {
-//   let pswdElm = document.getElementById("pswd");
-//   if (val) {
-//     console.log(pswdElm);
-//     if (val.length < 8) {
-//       pswdElm.innerText = " Password should be greater than 7 letters ";
-//     } else {
-//       pswdElm.innerText = "";
-//       if (
-//         val.match(
-//           "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^.&*-]).{8,}$"
-//         ) &&
-//         val.match(/^[A-Za-z0-9&$#@.]+$/)
-//       ) {
-//         pswdElm.innerText = "";
-//       } else {
-//         pswdElm.innerText =
-//           "Password must contain atleast one Capital letter , small letter , number and one of the special character from these @  & # $   .";
-//       }
-//     }
-//   }
-// };
-
-// const handleSubmit = () => {
-//   let nameElm = document.getElementById("name");
-//   let unameElm = document.getElementById("uname");
-//   let pswdElm = document.getElementById("pswd");
-//   if (name === "" || nameElm.innerText !== "") {
-//     nameElm.innerText = "Please enter your Name correctly";
-//   } else if (uname === "" || unameElm.innerText !== "") {
-//     unameElm.innerText = "Please enter your Username correctly";
-//   } else if (pswd === "" || pswdElm.innerText !== "") {
-//     pswdElm.innerText = "Please enter your Password correctly";
-//   } else if (cnfPswd === "" || cnfPswd !== pswd) {
-//     document.getElementById("cnfpswd").innerText =
-//       "Your Password & Confirm password must be same";
-//   } else {
-//     const user = {
-//       username: uname,
-//       name: name,
-//       password: pswd,
-//     };
-
-//     localStorage.setItem(uname, JSON.stringify(user));
-//     navigate("/login");
-//   }
-// };
-
-// <Form.Control
-//   onChange={(e) =>
-//     e.target.value === pswd
-//       ? setCnfPswd(e.target.value)
-//       : e.target.value === ""
-//       ? setCnfPswd("")
-//       : setCnfPswd("border-danger")
-//   }
-//   className={
-//     "inp text-mid " + (cnfPswd === "border-danger" ? "border-danger" : "")
-//   }
-//   name="confirm_password"
-//   type="password"
-// />;
-
-//  <Form.Control
-//    value={values.name}
-//    onChange={(e) => {
-//      setName(e.target.value);
-//      validateName(e.target.value);
-//    }}
-//    className="inp text-mid"
-//    name="name"
-//    type="name"
-//  />;
