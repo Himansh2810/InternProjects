@@ -9,7 +9,7 @@ return [
 
     'loginUser'=>[
         'username'=> 'required|min:3',
-        'password'=>'required|min:8'
+        'password'=>'required'
     ],
 
      'adminLogin'=>[

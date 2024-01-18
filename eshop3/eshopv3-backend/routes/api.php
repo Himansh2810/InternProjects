@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\CustomError;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HandleUserController;
@@ -21,9 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::middleware('validate:UserSchema,loginUser')->post('login', [AuthController::class,'login']);
 Route::middleware('validate:UserSchema,createUser')->post('create-user',[AuthController::class,'createUser']);
@@ -31,7 +32,7 @@ Route::middleware('validate:UserSchema,createUser')->post('create-user',[AuthCon
 Route::group([
 
     'middleware' => 'api',
-    'prefix' => 'auth'
+    'prefix' => 'auth' 
 
 ], function () {
 
@@ -53,10 +54,19 @@ Route::middleware('products')->controller(ProductsController::class)->group(func
 });
 
 Route::group(['middleware'=>'api','prefix'=>'admin'],function(){
-     Route::middleware('validate:UserSchema,adminLogin')->post('login',[AdminController::class,'login']);
-     Route::post('logout',[AdminController::class,'logout']);
-     Route::get('me',[AdminController::class,'me']);
-     Route::middleware('validate:ProductSchema,addProduct')->post('add-product',[AdminController::class,'addProduct']);
-     Route::middleware('validate:ProductSchema,addProduct')->post('update-product',[AdminController::class,'updateProduct']);
-     Route::middleware('validate:UserSchema,adminLogin')->post('delete-product',[AdminController::class,'deleteProduct']);
+
+    Route::controller(AdminController::class)->group(function(){
+        Route::middleware('validate:UserSchema,adminLogin')->post('login','login');
+        Route::post('logout','logout');
+        Route::get('me','me');
+        Route::middleware('validate:ProductSchema,addProduct')->post('add-product','addProduct');
+        Route::middleware('validate:ProductSchema,addProduct')->post('update-product','updateProduct');
+        Route::middleware('validate:UserSchema,adminLogin')->post('delete-product','deleteProduct');
+    });
+     
 });
+
+Route::any('{any}', function () {
+    throw new CustomError(404, 'Bad request, URL not found.');
+})->where('any', '.*');
+

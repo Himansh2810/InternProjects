@@ -53,6 +53,6 @@ const GlobalStyle = createGlobalStyle`
      return props.themecolor === "light" ? "white" : "#212529";
    }};
  }
-`;
+ `;
 
 export default App;

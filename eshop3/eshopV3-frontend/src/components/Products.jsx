@@ -6,6 +6,7 @@ import { BsCurrencyDollar } from "react-icons/bs";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 function Products() {
   const [category, setCategory] = useState("");
@@ -15,14 +16,18 @@ function Products() {
   });
 
   async function FetchProducts(c) {
-    const data = await axios.get(`http://localhost:8000/api/products/${c}`, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("eshop-user-token")}`
-      }
-    });
+    try {
+      const data = await axios.get(`http://localhost:8000/api/products/${c}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("eshop-user-token")}`
+        }
+      });
 
-    if (data) {
-      setProds(data.data);
+      if (data) {
+        setProds(data.data);
+      }
+    } catch (e) {
+      toast.error(e.response.data.message);
     }
   }
 
@@ -150,7 +155,7 @@ function Products() {
                       </p>
                     </h3>
                   </Card.Title>
-                  <Card.Text className="text-mid fw-medium mt-3 ms-3">
+                  <Card.Title className="text-mid fw-medium mt-3 ms-3">
                     <h2 className="d-flex align-items-center justify-content-start">
                       <span
                         className={
@@ -178,13 +183,14 @@ function Products() {
                     >
                       {product.description}
                     </h5>
-                  </Card.Text>
+                  </Card.Title>
                 </Card.Body>
               </Card>
             );
           })}
         </div>
       </Container>
+      <Toaster />
     </AdditionCSS>
   );
 }

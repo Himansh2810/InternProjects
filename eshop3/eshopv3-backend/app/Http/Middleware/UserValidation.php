@@ -3,8 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Exception;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Exceptions\CustomError;
 
 class UserValidation
 {
@@ -18,9 +20,16 @@ class UserValidation
 
         $validationSchema = $this->loadValidationRules($file, $schemaType); 
 
-        $request->validate($validationSchema);
+     
+         $validated = validator($request->all(),$validationSchema); //$request->validate($validationSchema);
 
-       return $next($request);
+         if ($validated->fails()) {
+            $message = $validated->errors()->first();
+            throw new CustomError(422, $message,$validated);
+         }
+
+         return $next($request);
+               
     }
 
     private function loadValidationRules($file, $schema)

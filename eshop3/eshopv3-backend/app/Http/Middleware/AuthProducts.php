@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Exceptions\CustomError;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,17 +20,17 @@ class AuthProducts
         $token = $request->bearerToken();
 
         if(!$token){
-            return response()->json(['error' => 'Unauthorized - Missing token'], 401);
+            throw new CustomError(401,"Unauthorized - Missing token");           
         }
 
         try {
              $user = JWTAuth::setToken($token)->authenticate();   
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Unauthorized - Invalid token'], 401);
+            throw new CustomError(401,"Unauthorized - Invalid token",null,$e->getCode(),$e);  
         }
 
         if (!$user) {
-            return response()->json(['error' => 'Unauthorized - Invalid user'], 401);
+            throw new CustomError(401,"Unauthorized - User details Invalid");  
         }
 
         $request->merge(['user' => $user]);

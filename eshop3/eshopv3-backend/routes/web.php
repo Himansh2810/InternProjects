@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+function logg($mes){
+    // Log::channel('customLog')->info($mes);
+    Log::stack(['single','customLog'])->info($mes);
+}
+
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/log', function () {
+    logg("This is my funlog");
+    dd("Varlog");
 });

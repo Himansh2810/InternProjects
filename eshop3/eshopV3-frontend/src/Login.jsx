@@ -30,7 +30,7 @@ function Login() {
         // console.error(data.data.error);
       }
     } catch (e) {
-      toast.error("Invalid Username or Password.");
+      toast.error(e.response.data.message);
     }
   }
 

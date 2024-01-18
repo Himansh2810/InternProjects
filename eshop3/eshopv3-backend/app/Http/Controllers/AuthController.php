@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\User;
 use Exception;
+use App\Exceptions\CustomError;
+use Illuminate\Database\QueryException;
+use Tymon\JWTAuth\Claims\Custom;
+use \Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -27,13 +31,15 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['username', 'password']);
+        
+         $credentials = request(['username', 'password']);
 
-        if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+         if (! $token = auth()->attempt($credentials)) {        
+           throw new CustomError(401,"Invalid Username or Password.");
+         }
 
-        return $this->respondWithToken($token);
+         return $this->respondWithToken($token);
+           
     }
 
     public function createUser(){
@@ -44,12 +50,19 @@ class AuthController extends Controller
 
             User::create($credentials);
 
-            return response()->json(["status"=>200]);
-        }catch(Exception $e){
-            return response()->json(["status"=>400,"error"=>$e]);
+            return response()->json(["status"=>200,"message"=>"Account Created Successfully. \n Redirecting to Login ..."]);
+        }catch(QueryException $e){
+            $ecode = $e->getCode();
+
+            if($ecode == 23000){
+                throw new CustomError(403, 'Username already exists.');
+            }
+            else{
+                throw new CustomError(403,"An error occurred while creating User.\n Please try again.");
+            }
+            
         }
         
-
     }
 
     /**
@@ -59,7 +72,14 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        Log::channel('customLog')->info("User tried to login...");
+
+        try{
+            return response()->json(auth()->user());
+        }catch(Exception $e){
+            Log::channel('errorLog')->error($e->getMessage());
+        }
+        
     }
 
     public function updateUser(){
@@ -68,23 +88,34 @@ class AuthController extends Controller
         
 
         if(auth()->validate($credentials)){
-            $user = User::where('username',$credentials['username'])->first();
 
-           if($user){
-             $user->name = request('name');
-             $user->password = bcrypt(request('new_password'));
+            try{
+                $user = User::where('username',$credentials['username'])->first();
 
-             $user->update();
+                if(!$user){
+                    throw new CustomError(404,'Username Not Exists');
+                    return;
+                }
 
-             return response()->json(['status'=>200]);
-           }
-           else{
-             return response()->json(['status'=>500]);
-           }
-            
+                $user->name = request('name');
+                $user->password = bcrypt(request('new_password'));
+
+                $user->update();
+
+                return response()->json(['message'=>'Your details updated successfully']);
+            }catch(QueryException $e){
+
+                if ($e->getCode() == 'HY000') {
+                     throw new CustomError(503, 'Database connection error. Please try again later.');
+                }
+
+                $ecode = $e->getCode();
+                throw new CustomError(500,"Unknown error occurred. \n Please try again",null,$ecode,$e);
+            }
+           
         }
         else{
-            return  response()->json(["status"=>401]);
+            throw new CustomError(401,"Invalid password.");
         }
     }
 
@@ -94,20 +125,24 @@ class AuthController extends Controller
         
 
         if(auth()->validate($credentials)){
+           try{
             $user = User::where('username',$credentials['username'])->first();
 
-           if($user){
-            
-             $user->delete();
-             return response()->json(['status'=>200]);
-           }
-           else{
-             return response()->json(['status'=>500]);
-           }
-            
+            if(!$user){
+               throw new CustomError(404,'Username Not Exists');
+               return;
+            }
+
+            $user->delete();
+            return response()->json();
+           
+          }catch(QueryException $e){
+            $ecode = $e->getCode();
+            throw new CustomError(500,"Unknown error occurred. \n Please try again",null,$ecode,$e);
+          }       
         }
         else{
-            return  response()->json(["status"=>401]);
+           throw new CustomError(401,"Invalid password.");
         }
     }
 
@@ -118,10 +153,14 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        auth()->logout();
+        try{
+            auth()->logout();
         
-
-        return response()->json(['message' => 'Successfully logged out',"status"=>200]);
+            return response()->json(['message' => 'Successfully logged out']);
+        }
+        catch(Exception $e){
+            Log::channel('errorLog')->error($e->getMessage());
+        }
     }
 
     /**
@@ -146,7 +185,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60
+            'expires_in' => JWTAuth::factory()->getTTL() * 150
         ]);
     }
 }

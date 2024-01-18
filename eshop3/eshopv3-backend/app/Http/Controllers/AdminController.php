@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomError;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
+use Illuminate\Database\QueryException;
 use \Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
@@ -32,10 +34,9 @@ class AdminController extends Controller
             Products::create($credentials); 
 
             return response()->json(["status"=>200]);
-        }catch(Exception $e){
-
-            Log::error($e);
-            return response()->json(["status"=>400,"error"=>$e]);
+        }catch(QueryException $e){
+            $ecode = $e->getCode();
+            throw new CustomError(403,"Unable to add product.\n Please try again",null,$ecode,$e);
         }
     }
 
@@ -44,52 +45,49 @@ class AdminController extends Controller
           
             $product = Products::where('id',request('id'))->first();
 
-            if($product){
-
-
-                $prods = array("title",
-                               "category",
-                               "price",
-                               "rating",
-                               "ratingCount",
-                               "imageUrl",
-                               "description"
-                );
-
-                foreach($prods as $atr){
-                    $product->$atr = request($atr);
-                }
-
-                $product->update();
-
-                return response()->json(['status'=>200]);
-
-
-            }else{
-                return response()->json(['status'=>500]);
+            if(!$product){
+                 throw new CustomError(404,"Product not found");
             }
-             
-        }catch(Exception $e){
+          
+            $prods = array("title",
+                            "category",
+                            "price",
+                            "rating",
+                            "ratingCount",
+                            "imageUrl",
+                            "description"
+            );
 
-            Log::error($e);
-            return response()->json(["status"=>400,"error"=>$e]);
+            foreach($prods as $atr){
+                $product->$atr = request($atr);
+            }
+
+            $product->update();
+
+            return response()->json(['status'=>200]);
+     
+        }catch(QueryException $e){
+            $ecode = $e->getCode();
+            throw new CustomError(403,"Unable to update product.\n Please try again",null,$ecode,$e);
         }
     }
     
      public function deleteProduct(){
 
-        
-           $product = Products::where('id',request('id'))->first();
+          try{
+            $product = Products::where('id',request('id'))->first();
 
-           if($product){
-            
-             $product->delete();
-             return response()->json(['status'=>200]);
-           }
-           else{
-             return response()->json(['status'=>500]);
-           }
-        
+            if(!$product){
+              throw new CustomError(404,"Product not found");
+            }
+
+            $product->delete();
+            return response()->json(['status'=>200]);    
+          }catch(QueryException $e){
+               $ecode = $e->getCode();
+               throw new CustomError(403,"Unable to delete product.\n Please try again",null,$ecode,$e);
+          }
+           
     }
 
     public function login()
@@ -140,7 +138,7 @@ class AdminController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 500,
+            'expires_in' => JWTAuth::factory()->getTTL() * 180,
         ]);
     }
 }

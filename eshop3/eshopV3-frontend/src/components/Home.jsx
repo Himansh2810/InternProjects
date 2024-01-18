@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { IoStarOutline } from "react-icons/io5";
 import { BsCurrencyDollar } from "react-icons/bs";
+import toast, { Toaster } from "react-hot-toast";
 import eShopentry from "../assets/eShopentry.jpg";
 
 // https://s3.amazonaws.com/mobileappdaily/mad/uploads/img_best_shopping_apps.jpg
@@ -19,20 +20,24 @@ function Home() {
   });
 
   async function FetchProducts() {
-    const data = await axios.get("http://localhost:8000/api/products/", {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("eshop-user-token")}`
+    try {
+      const data = await axios.get("http://localhost:8000/api/products/", {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("eshop-user-token")}`
+        }
+      });
+      if (data) {
+        setTrendProd([
+          data.data[2],
+          data.data[3],
+          data.data[7],
+          data.data[8],
+          data.data[9],
+          data.data[0]
+        ]);
       }
-    });
-    if (data) {
-      setTrendProd([
-        data.data[2],
-        data.data[3],
-        data.data[7],
-        data.data[8],
-        data.data[9],
-        data.data[0]
-      ]);
+    } catch (e) {
+      toast.error(e.response.data.message);
     }
   }
 
@@ -127,7 +132,7 @@ function Home() {
                       </p>
                     </h3>
                   </Card.Title>
-                  <Card.Text className="text-mid fw-medium mt-3 ms-3">
+                  <Card.Title className="text-mid fw-medium mt-3 ms-3">
                     <span className="d-flex align-items-center justify-content-start">
                       <span
                         className={
@@ -155,13 +160,14 @@ function Home() {
                     >
                       {product.description}
                     </span>
-                  </Card.Text>
+                  </Card.Title>
                 </Card.Body>
               </Card>
             );
           })}
         </div>
       </Container>
+      <Toaster />
     </AdditionCSS>
   );
 }

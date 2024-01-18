@@ -63,35 +63,24 @@ function CreateUser() {
         user
       );
 
-      if (data.data.status === 400) {
-        toast.error("Username Already exits ! \n Try different Username.");
-      } else if (data.data.status === 500) {
-        toast.error(
-          "There is a problem in creating your account. \n Please try again."
-        );
-      } else if (data.data.status === 200) {
-        toast.success(
-          "Account Created Successfully. \n Redirecting to Login ...",
-          {
-            style: {
-              width: "30rem",
-              height: "4rem",
-              fontSize: "1rem",
-              fontWeight: "500",
-              color: "black"
-            }
+      if (data.data.status === 200) {
+        toast.success(data.data.message, {
+          style: {
+            width: "30rem",
+            height: "4rem",
+            fontSize: "1rem",
+            fontWeight: "500",
+            color: "black"
           }
-        );
+        });
         setTimeout(() => {
           navigate("/login");
         }, 1500);
-      } else if (data.data.message) {
-        toast.error(data.data.message);
       } else {
-        toast.error("Unknwon error occured . \n Please try again.");
+        toast.error("Something went wrong.\n Please try again.");
       }
     } catch (e) {
-      // console.log(e);
+      toast.error(e.response.data.message);
     }
   }
 
@@ -120,7 +109,7 @@ function CreateUser() {
           <Form onSubmit={handleSubmit}>
             {formNames.map((fnames) => {
               return (
-                <Form.Group key={1} className="m-3">
+                <Form.Group key={fnames} className="m-3">
                   <Form.Label
                     htmlFor={fnames}
                     style={{ textTransform: "capitalize" }}

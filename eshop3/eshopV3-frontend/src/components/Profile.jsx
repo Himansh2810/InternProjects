@@ -112,22 +112,12 @@ function Profile() {
         }
       );
 
-      if (res) {
-        if (
-          res.data.status === 404 ||
-          res.data.status === 400 ||
-          res.data.status === 500
-        ) {
-          toast.error("Internal error occured or\n details not found");
-        } else if (res.data.status === 401) {
-          toast.error("Invalid password.Try again.");
-        } else {
-          toast.success("Your details updated successfully");
-          setDisableForm(true);
-        }
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        setDisableForm(true);
       }
     } catch (e) {
-      // console.log(e);
+      toast.error(e.response.data.message);
     }
   };
 
@@ -137,38 +127,34 @@ function Profile() {
   }, [disableForm]);
 
   const delAccount = async () => {
-    if (checkPassword === "") {
-      toast.error("Password is required field");
-    } else if (window.confirm("Are you sure want to Delete your account ? ")) {
-      const res = await axios.post(
-        "http://localhost:8000/api/auth/delete-user/",
-        {
-          username: user.username,
-          password: checkPassword
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem(
-              "eshop-user-token"
-            )}`
+    try {
+      if (checkPassword === "") {
+        toast.error("Password is required field");
+      } else if (
+        window.confirm("Are you sure want to Delete your account ? ")
+      ) {
+        const res = await axios.post(
+          "http://localhost:8000/api/auth/delete-user/",
+          {
+            username: user.username,
+            password: checkPassword
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem(
+                "eshop-user-token"
+              )}`
+            }
           }
-        }
-      );
+        );
 
-      if (res) {
-        if (
-          res.data.status === 404 ||
-          res.data.status === 400 ||
-          res.data.status === 500
-        ) {
-          toast.error("Internal error occured or\n Details not found");
-        } else if (res.data.status === 401) {
-          toast.error("Invalid password.Try again.");
-        } else {
+        if (res.status === 200) {
           sessionStorage.clear();
           navigate("/login");
         }
       }
+    } catch (e) {
+      toast.error(e.response.data.message);
     }
   };
 

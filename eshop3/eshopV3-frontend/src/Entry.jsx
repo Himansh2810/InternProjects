@@ -74,12 +74,10 @@ function Entry() {
           sessionStorage.clear();
           navigate("/login");
         } else {
-          toast.error("Something is wrong ..");
+          toast.error("Something went wrong ..");
         }
       } catch (e) {
-        // console.error(e);
-        // sessionStorage.clear();
-        // navigate("/login");
+        toast.error(e.response.data);
       }
     }
   };
